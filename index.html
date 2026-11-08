@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hành Trình Xanh Cùng Mầm - Bộ Trò Chơi Giáo Dục Môi Trường</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #2E7D32;
+            --accent: #FFB74D;
+            --bg-color: #E8F5E9;
+            --card-shadow: 0 10px 25px rgba(46, 125, 50, 0.15);
+        }
+
+        * { box-sizing: border-box; font-family: 'Quicksand', sans-serif; margin: 0; padding: 0; user-select: none; }
+        
+        body { 
+            background: linear-gradient(135deg, #a8e6cf 0%, #dbede3 100%);
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Container Khung Điện Thoại / Tablet */
+        .app-container {
+            width: 100%; max-width: 450px; height: 92vh; background: #ffffff;
+            border-radius: 28px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            display: flex; flex-direction: column; position: relative; overflow: hidden;
+            border: 6px solid #ffffff;
+        }
+
+        /* MÀN HÌNH ĐĂNG NHẬP HOÀNH TRÁNG */
+        #login-screen {
+            height: 100%; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; padding: 30px; text-align: center;
+            background: radial-gradient(circle at top, #e8f5e9, #c8e6c9);
+            position: relative;
+        }
+
+        .avatar-box {
+            width: 110px; height: 110px; background: #fff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 55px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px; animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .app-title { font-family: 'Fredoka', sans-serif; color: var(--primary-dark); font-size: 26px; margin-bottom: 8px; }
+        .app-subtitle { font-size: 13px; color: #555; margin-bottom: 25px; line-height: 1.4; }
+
+        .custom-input {
+            width: 100%; padding: 15px 20px; border: 3px solid #a5d6a7; border-radius: 20px;
+            font-size: 16px; outline: none; margin-bottom: 18px; text-align: center;
+            font-weight: bold; color: #2e7d32; transition: all 0.3s;
+        }
+        .custom-input:focus { border-color: var(--primary); box-shadow: 0 0 12px rgba(76, 175, 80, 0.4); }
+
+        .btn-wow {
+            background: linear-gradient(180deg, #66bb6a 0%, #4caf50 100%);
+            color: white; border: none; padding: 16px; width: 100%; border-radius: 20px;
+            font-size: 18px; font-weight: 700; font-family: 'Fredoka', sans-serif;
+            cursor: pointer; box-shadow: 0 6px 0 #2e7d32, 0 10px 15px rgba(0,0,0,0.15);
+            transition: all 0.15s; letter-spacing: 0.5px;
+        }
+        .btn-wow:active { transform: translateY(4px); box-shadow: 0 2px 0 #2e7d32; }
+
+        /* MÀN HÌNH CHÍNH APP */
+        #main-app { display: none; flex-direction: column; height: 100%; }
+
+        header {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        header .user-info { display: flex; align-items: center; gap: 10px; }
+        header .user-info h2 { font-size: 16px; font-family: 'Fredoka', sans-serif; }
+
+        .badge-tag { background: #FFD54F; color: #E65100; font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: bold; }
+
+        /* DANH SÁCH THẺ BÀI TRẠM HỌC */
+        .content-body { flex: 1; overflow-y: auto; padding: 18px; padding-bottom: 90px; }
+
+        .banner-journey {
+            background: linear-gradient(135deg, #FFF9C4, #FFF176);
+            border-radius: 18px; padding: 15px; margin-bottom: 20px; border: 2px dashed #FBC02D;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .banner-journey .icon { font-size: 32px; }
+
+        .station-card {
+            background: #ffffff; border-radius: 20px; padding: 16px; margin-bottom: 18px;
+            box-shadow: var(--card-shadow); border: 2px solid #E8F5E9;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;
+        }
+        .station-card:hover { transform: translateY(-4px); border-color: #81C784; }
+
+        .station-card .tag-day {
+            position: absolute; top: 14px; right: 14px; background: #E8F5E9; color: var(--primary-dark);
+            font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 10px;
+        }
+
+        .station-card h3 { font-family: 'Fredoka', sans-serif; color: var(--primary-dark); font-size: 16px; margin-bottom: 6px; }
+        .station-card p { font-size: 12px; color: #666; margin-bottom: 14px; line-height: 1.4; }
+
+        .action-btns { display: flex; gap: 10px; }
+        .btn-act {
+            flex: 1; padding: 10px; border-radius: 14px; text-decoration: none; text-align: center;
+            font-size: 12px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .btn-video { background: #E3F2FD; color: #1565C0; border: 1px solid #90CAF9; }
+        .btn-game { background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; }
+        .btn-act:hover { filter: brightness(0.95); transform: scale(1.02); }
+
+        /* KHUNG CHAT AI SANG TRỌNG */
+        .chat-container { display: none; flex-direction: column; height: 100%; background: #F4FBF7; }
+        .chat-header { background: #E8F5E9; padding: 12px 18px; font-family: 'Fredoka', sans-serif; color: var(--primary-dark); border-bottom: 1px solid #C8E6C9; display: flex; align-items: center; gap: 8px; }
+        .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        
+        .msg-bubble { max-width: 82%; padding: 12px 16px; border-radius: 18px; font-size: 13px; line-height: 1.4; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+        .msg-bubble.bot { background: white; color: #2C3E50; border-bottom-left-radius: 4px; border: 1px solid #E8F5E9; }
+        .msg-bubble.user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+
+        .chat-bar { padding: 12px; background: white; border-top: 1px solid #E0E0E0; display: flex; gap: 8px; }
+        .chat-bar input { flex: 1; border: 2px solid #E0E0E0; border-radius: 16px; padding: 10px 14px; outline: none; font-size: 13px; }
+        .chat-bar input:focus { border-color: var(--primary); }
+        .chat-bar button { background: var(--primary); border: none; color: white; padding: 10px 16px; border-radius: 16px; font-weight: bold; cursor: pointer; }
+
+        /* MODAL KHUNG NHÚNG XEM TRỰC TIẾP VIDEO/GAME */
+        .modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px); display: none; justify-content: center; align-items: flex-end; z-index: 999;
+        }
+        .modal-box {
+            width: 100%; height: 88%; background: white; border-top-left-radius: 24px; border-top-right-radius: 24px;
+            display: flex; flex-direction: column; overflow: hidden; animation: slideUp 0.3s forwards;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        .modal-header { padding: 12px 18px; background: #f5f5f5; display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #333; }
+        .btn-close { background: #FF5252; color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; }
+        .modal-iframe { width: 100%; flex: 1; border: none; }
+
+        /* NAV BOTTOM */
+        nav {
+            position: absolute; bottom: 0; width: 100%; background: #ffffff;
+            border-top: 1px solid #F0F0F0; display: flex; justify-content: space-around; padding: 8px 0;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.03);
+        }
+        nav button { background: none; border: none; font-size: 11px; font-weight: 700; color: #9E9E9E; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        nav button.active { color: var(--primary); }
+        nav button .nav-icon { font-size: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- 1. MÀN HÌNH ĐĂNG NHẬP (WOW) -->
+    <div id="login-screen">
+        <div class="avatar-box">🌱</div>
+        <h1 class="app-title">HÀNH TRÌNH XANH</h1>
+        <p class="app-subtitle">Bộ trò chơi giáo dục môi trường tương tác<br>Dành cho học sinh Lớp 3</p>
+        
+        <input type="text" id="student-name" class="custom-input" placeholder="Em hãy nhập tên mình..." autocomplete="off">
+        <button class="btn-wow" onclick="playAudio('pop'); startApp();">BẮT ĐẦU KHÁM PHÁ 🚀</button>
+    </div>
+
+    <!-- 2. MÀN HÌNH CHÍNH -->
+    <div id="main-app">
+        <header>
+            <div class="user-info">
+                <span style="font-size: 24px;">🌱</span>
+                <div>
+                    <h2 id="user-name-display">Bạn Nhỏ</h2>
+                    <span style="font-size: 10px; opacity: 0.9;">Hành động nhỏ - Ý nghĩa lớn</span>
+                </div>
+            </div>
+            <span class="badge-tag">⭐ Đại Sứ Xanh Nhí</span>
+        </header>
+
+        <!-- TAB TRANG CHỦ (BẢN ĐỒ 9 NGÀY) -->
+        <div id="tab-home" class="content-body">
+            <div class="banner-journey">
+                <div class="icon">🗺️</div>
+                <div>
+                    <h4 style="font-family: 'Fredoka', sans-serif; color: #F57F17;">Hành trình 9 Ngày</h4>
+                    <p style="font-size: 11px; color: #795548;">Vượt qua 4 trạm trải nghiệm để nhận Giấy Chứng Nhận Xanh!</p>
+                </div>
+            </div>
+
+            <!-- TRẠM 1 -->
+            <div class="station-card">
+                <span class="tag-day">Ngày 1 - 2</span>
+                <h3>💧 Trạm 1: Tiết Kiệm Nước</h3>
+                <p>Khám phá giá trị của nguồn nước sạch và thực hành hành động khóa vòi nước đúng cách.</p>
+                <div class="action-btns">
+                    <button class="btn-act btn-video" onclick="playAudio('click'); openModal('Video Bài Học: Nguồn Nước', 'https://www.youtube.com/embed/dQw4w9WgXcQ')">🎬 Xem Video</button>
+                    <button class="btn-act btn-game" onclick="playAudio('click'); openModal('Mini Game: Tiết Kiệm Nước', 'https://wordwall.net/embed/play')">🎮 Chơi Game</button>
+                </div>
+            </div>
+
+            <!-- TRẠM 2 -->
+            <div class="station-card">
+                <span class="tag-day">Ngày 3 - 4</span>
+                <h3>🗑️ Trạm 2: Phân Loại & Giảm Rác</h3>
+                <p>Phân biệt rác nhựa, rác tái chế và thực hành bỏ rác đúng thùng màu sắc.</p>
+                <div class="action-btns">
+                    <button class="btn-act btn-video" onclick="playAudio('click'); openModal('Video Bài Học: Phân Loại Rác', 'https://www.youtube.com/embed/dQw4w9WgXcQ')">🎬 Xem Video</button>
+                    <button class="btn-act btn-game" onclick="playAudio('click'); openModal('Mini Game: Phân Loại Rác', 'https://wordwall.net/embed/play')">🎮 Chơi Game</button>
+                </div>
+            </div>
+
+            <!-- TRẠM 3 -->
+            <div class="station-card">
+                <span class="tag-day">Ngày 5 - 6</span>
+                <h3>⚡ Trạm 3: Tiết Kiệm Điện Năng</h3>
+                <p>Nhận biết các thiết bị tiêu thụ điện và thực hành thói quen tắt đèn, quạt khi ra khỏi phòng.</p>
+                <div class="action-btns">
+                    <button class="btn-act btn-video" onclick="playAudio('click'); openModal('Video Bài Học: Điện Năng', 'https://www.youtube.com/embed/dQw4w9WgXcQ')">🎬 Xem Video</button>
+                    <button class="btn-act btn-game" onclick="playAudio('click'); openModal('Mini Game: Tiết Kiệm Điện', 'https://wordwall.net/embed/play')">🎮 Chơi Game</button>
+                </div>
+            </div>
+
+            <!-- TRẠM 4 -->
+            <div class="station-card">
+                <span class="tag-day">Ngày 7 - 8</span>
+                <h3>🌱 Trạm 4: Bảo Vệ Cây Xanh</h3>
+                <p>Tìm hiểu vai trò lá phổi xanh của trái đất và tự tay chăm sóc mầm cây nhỏ.</p>
+                <div class="action-btns">
+                    <button class="btn-act btn-video" onclick="playAudio('click'); openModal('Video Bài Học: Cây Xanh', 'https://www.youtube.com/embed/dQw4w9WgXcQ')">🎬 Xem Video</button>
+                    <button class="btn-act btn-game" onclick="playAudio('click'); openModal('Mini Game: Chăm Sóc Cây', 'https://wordwall.net/embed/play')">🎮 Chơi Game</button>
+                </div>
+            </div>
+
+            <!-- NGÀY 9 -->
+            <div class="station-card" style="background: linear-gradient(135deg, #FFF3E0, #FFE0B2); border-color: #FFB74D;">
+                <span class="tag-day" style="background: #FFE0B2; color: #E65100;">Ngày 9</span>
+                <h3 style="color: #E65100;">🏆 Tổng Kết & Nhận Huy Hiệu</h3>
+                <p style="color: #8D6E63;">Vòng quay tri thức tổng hợp và cấp Chứng Nhận Đại Sứ Xanh Nhí điện tử!</p>
+                <button class="btn-wow" style="font-size: 14px; padding: 10px;" onclick="playAudio('win'); openModal('Tổng Kết Ngày 9', 'https://wordwall.net/embed/play')">🌟 NHẬN CHỨNG NHẬN NGAY</button>
+            </div>
+        </div>
+
+        <!-- TAB CHATBOT AI -->
+        <div id="tab-chat" class="chat-container">
+            <div class="chat-header">
+                <span style="font-size: 20px;">🤖</span>
+                <span>Trợ Lý Mầm AI (Đồng Hành 24/7)</span>
+            </div>
+            <div class="chat-messages" id="chat-box">
+                <div class="msg-bubble bot">Xin chào em! Mình là Mầm. Hôm nay em có thắc mắc gì về bảo vệ môi trường không nào? 🌿</div>
+            </div>
+            <div class="chat-bar">
+                <input type="text" id="chat-input" placeholder="Hỏi Mầm bất cứ điều gì em nhé..." onkeypress="if(event.key==='Enter') sendChat()">
+                <button onclick="sendChat()">Gửi</button>
+            </div>
+        </div>
+
+        <!-- BOTTOM NAV -->
+        <nav>
+            <button onclick="playAudio('pop'); switchTab('home')" id="nav-home" class="active">
+                <span class="nav-icon">🗺️</span>
+                <span>Hành Trình</span>
+            </button>
+            <button onclick="playAudio('pop'); switchTab('chat')" id="nav-chat">
+                <span class="nav-icon">🤖</span>
+                <span>Hỏi Mầm AI</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- MODAL HIỂN THỊ TRỰC TIẾP GAME/VIDEO KHÔNG CẦN CHUYỂN TRANG -->
+    <div id="app-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span id="modal-title">Nội dung học tập</span>
+                <button class="btn-close" onclick="closeModal()">✕</button>
+            </div>
+            <iframe id="modal-frame" class="modal-iframe" src=""></iframe>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // 1. TẠO ÂM THANH TRỰC TIẾP BẰNG WEB AUDIO API (KHÔNG CẦN TẢI FILE MP3)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playAudio(type) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'pop') {
+            osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.08);
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.08);
+        } else if (type === 'click') {
+            osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+        } else if (type === 'win') {
+            osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+        }
+    }
+
+    // 2. XỬ LÝ ĐĂNG NHẬP
+    function startApp() {
+        const name = document.getElementById('student-name').value.trim();
+        if(!name) {
+            alert('Em quên nhập tên mình rồi nè!');
+            return;
+        }
+        document.getElementById('user-name-display').innerText = name;
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'flex';
+    }
+
+    // 3. CHUYỂN TAB
+    function switchTab(tab) {
+        if(tab === 'home') {
+            document.getElementById('tab-home').style.display = 'block';
+            document.getElementById('tab-chat').style.display = 'none';
+            document.getElementById('nav-home').classList.add('active');
+            document.getElementById('nav-chat').classList.remove('active');
+        } else {
+            document.getElementById('tab-home').style.display = 'none';
+            document.getElementById('tab-chat').style.display = 'flex';
+            document.getElementById('nav-chat').classList.add('active');
+            document.getElementById('nav-home').classList.remove('active');
+        }
+    }
+
+    // 4. MỞ KHUNG NHÚNG TRỰC TIẾP VIDEO/GAME (MODAL)
+    function openModal(title, url) {
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-frame').src = url;
+        document.getElementById('app-modal').style.display = 'flex';
+    }
+    function closeModal() {
+        document.getElementById('app-modal').style.display = 'none';
+        document.getElementById('modal-frame').src = '';
+    }
+
+    // 5. TRỢ LÝ CHATBOT AI
+    function sendChat() {
+        const input = document.getElementById('chat-input');
+        const text = input.value.trim();
+        if(!text) return;
+
+        playAudio('click');
+        const box = document.getElementById('chat-box');
+        box.innerHTML += `<div class="msg-bubble user">${text}</div>`;
+        input.value = '';
+        box.scrollTop = box.scrollHeight;
+
+        setTimeout(() => {
+            let reply = "Câu hỏi của em rất thú vị! Hãy cùng Mầm bảo vệ hành tinh xanh nhé 🌱";
+            const lower = text.toLowerCase();
+            if(lower.includes('nước')) reply = "Tiết kiệm nước là tắt vòi khi đánh răng và báo bố mẹ khi vòi nước bị rò rỉ em nhé! 💧";
+            else if(lower.includes('rác')) reply = "Rác hữu cơ (vỏ trái cây) có thể làm phân bón, còn chai nhựa nhớ bỏ thùng tái chế nhé! 🗑️";
+            else if(lower.includes('điện')) reply = "Ra khỏi phòng nhớ tắt đèn, tắt quạt để tiết kiệm năng lượng em nha! ⚡";
+
+            box.innerHTML += `<div class="msg-bubble bot">${reply}</div>`;
+            box.scrollTop = box.scrollHeight;
+            playAudio('pop');
+        }, 500);
+    }
+</script>
+</body>
+</html>
